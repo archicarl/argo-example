@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: guestbook-ingress
+  annotations:
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    alb.ingress.kubernetes.io/subnets: subnet-03fbf777b874b07fb, subnet-0fd3d874dc9fae14e
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:026141090148:certificate/b3d8a09f-c6c2-482f-94c1-22d03362795f
+    alb.ingress.kubernetes.io/group.name: default
+spec:
+  ingressClassName: alb
+  rules:
+  - host: guestbook.dev.archisketch.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: guestbook-ui
+            port:
+              number: 80
+  
